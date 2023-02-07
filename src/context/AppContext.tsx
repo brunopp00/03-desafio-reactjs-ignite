@@ -29,10 +29,21 @@ export const AppContext = createContext({})
 
 export function AppContextProvider({ children }: AppContextProviderProps) {
   const [profile, setProfile] = useState<ProfileProps[]>([])
+  const [repos, setRepos] = useState([])
 
-  const fetchRepositories = useCallback(async () => {
+  const fetchRepositoriesAcount = useCallback(async () => {
     const response = await api.get('', {})
     setProfile(response.data)
+    console.log(response.data)
+  }, [])
+
+  useEffect(() => {
+    fetchRepositoriesAcount()
+  }, [fetchRepositoriesAcount])
+
+  const fetchRepositories = useCallback(async () => {
+    const response = await api.get('/repos', {})
+    setRepos(response.data)
     console.log(response.data)
   }, [])
 
@@ -41,6 +52,8 @@ export function AppContextProvider({ children }: AppContextProviderProps) {
   }, [fetchRepositories])
 
   return (
-    <AppContext.Provider value={{ profile }}>{children}</AppContext.Provider>
+    <AppContext.Provider value={{ profile, repos }}>
+      {children}
+    </AppContext.Provider>
   )
 }
